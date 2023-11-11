@@ -5,6 +5,18 @@ const app = express();
 // middleware
 app.use(express.json());
 
+app.use((req, res, next) => {
+  console.log('Hello from the middleware 👋');
+
+  // NOTE: the next function is called to continue the request response cycle
+  next();
+});
+
+app.use((req, res, next) => {
+  req.requestTime = new Date().toISOString();
+  next();
+});
+
 const port = 3000;
 
 const tours = JSON.parse(
@@ -15,6 +27,7 @@ const getAllTours = (req, res) => {
   res.status(200).json({
     // jsend format
     status: 'success',
+    requestedAt: req.requestTime,
     results: tours.length,
     data: {
       tours,
