@@ -1,15 +1,21 @@
 const express = require('express');
 const {
+  checkId,
+  checkBody,
   getAllTours,
   createTour,
   getTour,
   updateTour,
   deleteTour,
-} = require(`${__dirname}/../controllers/tourController`);
+} = require('../controllers/tourController');
 
 const router = express.Router();
 
-router.route('/').get(getAllTours).post(createTour);
+// MIDDLEWARE
+router.param('id', checkId);
+
+// ROUTES
+router.route('/').get(getAllTours).post(checkBody, createTour);
 
 router.route('/:id').get(getTour).patch(updateTour).delete(deleteTour);
 

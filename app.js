@@ -8,17 +8,14 @@ const app = express();
 
 // 1) MIDDLEWARES
 
-// NOTE: Even morgan function returns a call back function with the req,res and next
-app.use(morgan('dev'));
+if (process.env.NODE_ENV === 'development')
+  // NOTE: Morgan function also returns a call back function with the req,res and next
+  app.use(morgan('dev'));
 
 app.use(express.json());
 
-app.use((req, res, next) => {
-  console.log('Hello from the middleware 👋');
-
-  // NOTE: the next function is called to continue the request response cycle
-  next();
-});
+// middle to create access to static files
+app.use(express.static(`${__dirname}/public`));
 
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
