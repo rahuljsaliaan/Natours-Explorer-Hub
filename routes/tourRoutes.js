@@ -1,7 +1,5 @@
 const express = require('express');
 const {
-  checkId,
-  checkBody,
   getAllTours,
   createTour,
   getTour,
@@ -12,10 +10,10 @@ const {
 const router = express.Router();
 
 // MIDDLEWARE
-router.param('id', checkId);
+// router.param('id', checkId);
 
 // ROUTES
-router.route('/').get(getAllTours).post(checkBody, createTour);
+router.route('/').get(getAllTours).post(createTour);
 
 router.route('/:id').get(getTour).patch(updateTour).delete(deleteTour);
 
