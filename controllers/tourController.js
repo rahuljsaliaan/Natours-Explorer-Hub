@@ -67,7 +67,7 @@ exports.getTour = async (req, res) => {
   } catch (error) {
     res.status(404).json({
       status: 'fail',
-      message: error,
+      message: error.message,
     });
   }
 };
@@ -90,7 +90,7 @@ exports.createTour = async (req, res) => {
   } catch (error) {
     res.status(400).json({
       status: 'fail',
-      message: error,
+      message: error.message,
     });
   }
 };
@@ -112,7 +112,7 @@ exports.updateTour = async (req, res) => {
   } catch (error) {
     res.status(400).json({
       status: 'fail',
-      message: error,
+      message: error.message,
     });
   }
 };
@@ -128,7 +128,56 @@ exports.deleteTour = async (req, res) => {
   } catch (error) {
     res.status(404).json({
       status: 'fail',
-      message: error,
+      message: error.message,
+    });
+  }
+};
+
+// Aggregation Pipeline
+exports.getTourStats = async (req, res) => {
+  try {
+    // AGGREGATE PIPELINE
+    const stats = await Tour.aggregate([
+      {
+        // stage 1
+        $match: { ratingsAverage: { $gte: 4.5 } },
+      },
+      {
+        // stage 2
+        $group: {
+          // group all the tours together
+          // _id: null,
+
+          // group by difficulty
+          _id: { $toUpper: '$difficulty' },
+
+          // NOTE: numTours act likes a counter i:e for each of the document it goes through it adds one
+          numTours: { $sum: 1 },
+          numRatings: { $sum: '$ratingsQuantity' },
+          avgRating: { $avg: '$ratingsAverage' },
+          avgPrice: { $avg: '$price' },
+          minPrice: { $min: '$price' },
+          maxPrice: { $max: '$price' },
+        },
+      },
+      {
+        // Sort by avgPrice in ascending order
+        // Stage 3
+        // NOTE: There is a reason why we are using avgPrice is because the document is already grouped by reaching this stage and the avgPrice will be available heres
+        $sort: { avgPrice: 1 },
+      },
+    ]);
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        stats,
+      },
+    });
+  } catch (error) {
+    res.status(404).json({
+      status: 'fail',
+      message: error.message,
     });
   }
 };
