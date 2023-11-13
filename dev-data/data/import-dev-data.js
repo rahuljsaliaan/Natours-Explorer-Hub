@@ -5,7 +5,7 @@ const dotenv = require('dotenv');
 const Tour = require('../../models/tourModel');
 
 // Setting environment variables
-dotenv.config({ path: `${__dirname}../../../config.env` });
+dotenv.config({ path: `${__dirname}/../../../config.env` });
 
 // Reading the tours data from the file
 const tours = JSON.parse(
@@ -31,21 +31,21 @@ const importData = async () => {
   try {
     await Tour.create(tours);
     console.log('Data successfully loaded');
-    // Aggressive way to stop and application
-    process.exit();
   } catch (error) {
     console.log(error);
   }
+  // Aggressive way to stop and application
+  process.exit();
 };
 
 const deleteData = async () => {
   try {
     await Tour.deleteMany();
     console.log('Data successfully deleted');
-    process.exit();
   } catch (error) {
     console.log(error);
   }
+  process.exit();
 };
 
 // Running the process through command line
