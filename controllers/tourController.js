@@ -1,26 +1,40 @@
 const Tour = require('../models/tourModel');
+const APIFeatures = require('../utils/APIFeatures');
+
+// 1) MIDDLEWARE HANDLERS
+exports.aliasTopTours = (req, res, next) => {
+  req.query.limit = '5';
+  req.query.sort = '-ratingsAverage,price';
+  req.query.field = 'name,price,ratingsAverage,summary,difficulty';
+  next();
+};
 
 // 2) ROUTE HANDLERS
 exports.getAllTours = async (req, res) => {
   try {
-    // BUILD QUERY
-    const queryObj = { ...req.query };
-
-    // Filter out the excluded fields from the query object
-    const excludedFields = ['page', 'sort', 'limit', 'field'];
-    excludedFields.forEach((el) => delete queryObj[el]);
-
-    // The find method returns a query which will be resolved to a object of data that was queried
-    const query = Tour.find(queryObj);
-
+    // {
+    // DEPRECATED
+    // if (req.query.page) {
+    //   // NOTE: The reason for called the countDocuments on the Tour model because the query might have different sets of values compared to original sets of values in the collection
+    //   const numTours = await Tour.countDocuments();
+    //   if (skip >= numTours) throw new Error('This page does not exist');
+    // }
     // const query = Tour.find()
     //   .where('duration')
     //   .equals(5)
     //   .where('difficulty')
     //   .equals('easy');
+    // }
 
     // EXECUTE QUERY
-    const tours = await query;
+    // PARAMETERS: query: return by the Tour modal, queryString: the query property of the req object
+    const features = new APIFeatures(Tour.find(), req.query)
+      .filter()
+      .sort()
+      .limitFields()
+      .paginate();
+
+    const tours = await features.query;
 
     // SEND RESPONSE
     res.status(200).json({
@@ -34,7 +48,7 @@ exports.getAllTours = async (req, res) => {
   } catch (error) {
     res.status(404).json({
       status: 'fail',
-      message: error,
+      message: error.message,
     });
   }
 };
