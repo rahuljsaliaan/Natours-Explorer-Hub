@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start:dev": "nodemon server",
-    "start:prod": "SET NODE_ENV=production && nodemon server"
+    "start": "nodemon server.js",
+    "start:prod": "SET NODE_ENV=production && nodemon server.js",
+    "debug": "node --inspect server.js"
   },
   "author": "Rahul J",
   "license": "MIT",

@@ -9,7 +9,7 @@ class APIFeatures {
     const queryObj = { ...this.queryString };
 
     // Filter out the excluded fields from the query object
-    const excludedFields = ['page', 'sort', 'limit', 'field'];
+    const excludedFields = ['page', 'sort', 'limit', 'fields'];
     excludedFields.forEach((el) => delete queryObj[el]);
 
     // Advanced filtering
@@ -27,7 +27,7 @@ class APIFeatures {
     // SORTING
     if (this.queryString.sort) {
       // Replace comma's by a space to match the criteria of the mongodb sorting
-      const sortBy = this.queryString.sort.split(',').join(' ');
+      const sortBy = this.queryString.sort.split(',').join('');
       this.query = this.query.sort(sortBy);
       // query.sort('price ratingsAverage')
     } else {
@@ -41,8 +41,8 @@ class APIFeatures {
 
   limitFields() {
     // LIMITING FIELDS
-    if (this.queryString.field) {
-      const fields = this.queryString.field.split(',').join(' ');
+    if (this.queryString.fields) {
+      const fields = this.queryString.fields.split(',').join(' ');
       this.query = this.query.select(fields);
     } else {
       this.query = this.query.select('-__v');
