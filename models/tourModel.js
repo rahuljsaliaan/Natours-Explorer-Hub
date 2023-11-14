@@ -59,6 +59,10 @@ const tourSchema = new mongoose.Schema(
       select: false,
     },
     startDates: [Date],
+    secretTour: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     // Including the virtual properties in both JSON and object output
@@ -78,6 +82,7 @@ tourSchema.virtual('durationWeeks').get(function () {
 //DOCUMENT MIDDLEWARE: runs before .save() and .create()
 // Pre save hook
 tourSchema.pre('save', function (next) {
+  // this refers to the document object
   this.slug = slugify(this.name, { lower: true });
 
   next();
@@ -89,6 +94,23 @@ tourSchema.pre('save', function (next) {
 //   console.log(doc);
 //   next();
 // });
+
+// QUERY MIDDLEWARE: NOTE: runs before the .find() method is EXECUTED of the query object
+// tourSchema.pre('find', function (next) {
+// NOTE: Executed for all the function staring with find ie: find, findOne, findOneAndDelete etc
+tourSchema.pre(/^find/, function (next) {
+  // this refers to the query object
+  this.find({ secretTour: { $ne: true } });
+  this.start = Date.now();
+  next();
+});
+
+// runs after the .find() method is EXECUTED
+tourSchema.post(/^find/, function (docs, next) {
+  console.log(`Query took ${Date.now() - this.start} milliseconds`);
+  console.log(`Total Number of documents read ${docs.length}`);
+  next();
+});
 
 // MODELS
 const Tour = mongoose.model('Tour', tourSchema);
