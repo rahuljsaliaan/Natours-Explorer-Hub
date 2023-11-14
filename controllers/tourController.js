@@ -218,9 +218,11 @@ exports.getMonthlyPlan = async (req, res) => {
         $project: { _id: 0 },
       },
       {
+        // Sort in Descending order of numToursStarts
         $sort: { numTourStarts: -1 },
       },
       {
+        // Limit the results to only 12 months
         $limit: 12,
       },
     ]);
