@@ -5,7 +5,7 @@ const dotenv = require('dotenv');
 const Tour = require('../../models/tourModel');
 
 // Setting environment variables
-dotenv.config({ path: `${__dirname}/../../../config.env` });
+dotenv.config({ path: `${__dirname}../../../config.env` });
 
 // Reading the tours data from the file
 const tours = JSON.parse(
