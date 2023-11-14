@@ -112,6 +112,18 @@ tourSchema.post(/^find/, function (docs, next) {
   next();
 });
 
+// AGGREGATION MIDDLEWARE
+tourSchema.pre('aggregate', function (next) {
+  // Adding a match stage to the beginning of the aggregation pipeline
+
+  // NOTE: The reason we are accessing the pipeline though pipeline method is because the pipeline property is protected property which is denoted as _pipeline hence it is against the oop principal to access these properties directly and hence we access them using a getter method called pipeline
+  this.pipeline().unshift({
+    $match: { secretTour: { $ne: true } },
+  });
+
+  next();
+});
+
 // MODELS
 const Tour = mongoose.model('Tour', tourSchema);
 
