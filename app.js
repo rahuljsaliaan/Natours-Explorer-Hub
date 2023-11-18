@@ -2,6 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 
 const AppError = require('./utils/appError');
+const globalErrorHandler = require('./controllers/errorController');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 
@@ -31,18 +32,10 @@ app.use('/api/v1/users', userRouter);
 // Default route
 app.all('*', (req, res, next) => {
   // NOTE: the express will know that it is error object being passed and all other middle ware will be skipped and the error middle ware will be executed
-  next(new AppError(`Cannot find ${req.originalUrl} on this server`));
+  next(new AppError(`Cannot find ${req.originalUrl} on this server`, 404));
 });
 
 // ERROR MIDDLEWARE
-app.use((error, req, res, next) => {
-  error.statusCode = error.statusCode || 500;
-  error.status = error.status || 'error';
-
-  res.status(error.statusCode).json({
-    status: error.status,
-    message: error.message,
-  });
-});
+app.use(globalErrorHandler);
 
 module.exports = app;
