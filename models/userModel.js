@@ -22,6 +22,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please provide a password'],
     minLength: 8,
+    select: false,
   },
 
   // This field is not persisted to the database (required only for validation purposes)
@@ -51,6 +52,14 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-const UserModel = mongoose.model('User', userSchema);
+// Instance method: Available on all documents of a certain collection (means all instance created from that model has access to this method)
+userSchema.methods.comparePassword = async function (
+  candidatePassword,
+  userPassword,
+) {
+  return await bcrypt.compare(candidatePassword, userPassword);
+};
 
-module.exports = UserModel;
+const User = mongoose.model('User', userSchema);
+
+module.exports = User;
