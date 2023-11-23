@@ -53,7 +53,7 @@ userSchema.pre('save', async function (next) {
 });
 
 // Instance method: Available on all documents of a certain collection (means all instance created from that model has access to this method)
-userSchema.methods.comparePassword = async function (
+userSchema.methods.correctPassword = async function (
   candidatePassword,
   userPassword,
 ) {
