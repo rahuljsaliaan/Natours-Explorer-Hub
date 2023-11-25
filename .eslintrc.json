@@ -3,7 +3,7 @@
   "plugins": ["prettier"],
   "rules": {
     // NTC
-    "prettier/prettier": ["error", {"endOfLine" : "auto"}],
+    "prettier/prettier": ["error", { "endOfLine": "auto" }],
     "spaced-comment": "off",
     "no-console": "warn",
     "consistent-return": "off",
@@ -15,10 +15,13 @@
     "no-underscore-dangle": "off",
     "class-methods-use-this": "off",
     "prefer-destructuring": ["error", { "object": true, "array": false }],
-    "node/no-unsupported-features/es-syntax": ["error", {
+    "node/no-unsupported-features/es-syntax": [
+      "error",
+      {
         "version": ">=20.0.0",
         "ignores": []
-    }],
+      }
+    ],
     "no-unused-vars": ["error", { "argsIgnorePattern": "req|res|next|val" }]
   }
 }
