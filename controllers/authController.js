@@ -10,15 +10,14 @@ const signToken = (id) =>
   });
 
 exports.signup = catchAsync(async (req, res, next) => {
-  const { name, email, password, passwordConfirm, passwordChangedAt } =
-    req.body;
+  const { name, email, role, password, passwordConfirm } = req.body;
 
   const newUser = await User.create({
     name,
     email,
+    role,
     password,
     passwordConfirm,
-    passwordChangedAt,
   });
 
   // CREATING TOKEN
