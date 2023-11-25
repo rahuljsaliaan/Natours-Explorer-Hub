@@ -95,7 +95,21 @@ exports.protect = catchAsync(async (req, res, next) => {
     );
 
   // GRANT ACCESS TO PROTECTED ROUTE
+  // NOTE: We are creating this so that the next middleware (eg: restrictTo) can have access to the current user
   req.user = currentUser;
 
   next();
 });
+
+exports.restrictTo =
+  (...roles) =>
+  (req, res, next) => {
+    // NOTE: req.user is coming from the protect middleware
+    if (!roles.includes(req.user.role)) {
+      return next(
+        new AppError('You do not have permission to perform this action', 403),
+      );
+    }
+
+    next();
+  };
