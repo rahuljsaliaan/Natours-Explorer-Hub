@@ -11,6 +11,21 @@ const signToken = (id) =>
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 
+const createTokenSend = (user, statusCode, res) => {
+  const token = signToken(user._id);
+
+  const jsonResponse = {
+    status: 'success',
+    token,
+  };
+
+  if (user.email && user.name)
+    jsonResponse.data = { email: user.email, name: user.name };
+
+  // SEND RESPONSE WITH TOKEN
+  res.status(statusCode).json(jsonResponse);
+};
+
 exports.signup = catchAsync(async (req, res, next) => {
   const { name, email, role, password, passwordConfirm } = req.body;
 
@@ -24,43 +39,35 @@ exports.signup = catchAsync(async (req, res, next) => {
 
   // CREATING TOKEN
   // payload, secret, options
-  const token = signToken(newUser._id);
 
   // SEND RESPONSE WITH TOKEN
-  res.status(201).json({
-    status: 'success',
-    token,
-    data: {
-      user: {
-        name: newUser.name,
-        email: newUser.email,
-      },
+  createTokenSend(
+    {
+      _id: newUser._id,
+      name: newUser.name,
+      email: newUser.email,
     },
-  });
+    201,
+    res,
+  );
 });
 
 exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
 
   // 1) CHECK IF EMAIL AND PASSWORD EXISTS
-  if (!email || !password) {
+  if (!email || !password)
     return next(new AppError('Please provide email and password!', 400));
-  }
 
   // 2) CHECK IF USER EXISTS && PASSWORD IS CORRECT
   const user = await User.findOne({ email }).select('+password');
 
   // NOTE: The reason why we are calling the user.correctPassword inside the if statement because it's an asynchronous code and so the if block will be executed before the password in compared and so we use them inside the if statement to make the entire if statement asynchronous and correct.
-  if (!user || !(await user.correctPassword(password, user.password))) {
+  if (!user || !(await user.correctPassword(password, user.password)))
     return next(new AppError('Incorrect email or password', 401));
-  }
-  // 3) IF EVERYTHING IS OK, SEND TOKEN TO CLIENT
-  const token = signToken(user._id);
 
-  res.status(200).json({
-    status: 'success',
-    token,
-  });
+  // 3) IF EVERYTHING IS OK, SEND TOKEN TO CLIENT
+  createTokenSend(user, 200, res);
 });
 
 exports.protect = catchAsync(async (req, res, next) => {
@@ -183,10 +190,27 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   // 3) UPDATE THE changedPasswordAt PROPERTY FOR THE USER
 
   // 4) LOG THE USER IN, SEND JWT
-  const token = signToken(user._id);
+  createTokenSend(user, 200, res);
+});
 
-  res.status(200).json({
-    status: 'success',
-    token,
-  });
+exports.updatePassword = catchAsync(async (req, res, next) => {
+  // 1) GET USER FROM COLLECTION
+  const { currentPassword, password, passwordConfirm } = req.body;
+
+  // NOTE: current user is already there in the req object as the usr is already logged in.
+  const user = await User.findById(req.user.id).select('+password');
+
+  // 2) CHECK IF THE POSTed PASSWORD IS CORRECT
+  if (!(await user.correctPassword(currentPassword, user.password)))
+    return next(new AppError('Your current password is wrong', 401));
+
+  // 3) IF SO UPDATE THE PASSWORD
+  user.password = password;
+  user.passwordConfirm = passwordConfirm;
+
+  // NOTE: not to use update only use save or create related to password for the validations and pre save hook to run
+  await user.save();
+
+  // 4) LOG THE USER IN, SEND JWT
+  createTokenSend(user, 200, res);
 });
