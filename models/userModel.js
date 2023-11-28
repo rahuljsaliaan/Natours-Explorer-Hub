@@ -50,6 +50,11 @@ const userSchema = new mongoose.Schema({
   // Password reset token
   passwordResetToken: String,
   passwordResetExpires: Date,
+  active: {
+    type: Boolean,
+    default: true,
+    select: false,
+  },
 });
 
 userSchema.pre('save', async function (next) {
@@ -70,6 +75,13 @@ userSchema.pre('save', async function (next) {
   if (!this.isModified('password') || this.isNew) return next();
 
   this.passwordChangedAt = Date.now() - 1000;
+  next();
+});
+
+// Filter out the deleted users
+userSchema.pre(/^find/, async function (next) {
+  // not equal to false
+  this.find({ active: { $ne: false } });
   next();
 });
 
