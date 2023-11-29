@@ -27,7 +27,7 @@ class APIFeatures {
     // SORTING
     if (this.queryString.sort) {
       // Replace comma's by a space to match the criteria of the mongodb sorting
-      const sortBy = this.queryString.sort.split(',').join('');
+      const sortBy = this.queryString.sort.split(',').join(' ');
       this.query = this.query.sort(sortBy);
       // query.sort('price ratingsAverage')
     } else {
@@ -57,6 +57,7 @@ class APIFeatures {
     const limit = +this.queryString.limit || 100;
     const skip = (page - 1) * limit;
 
+    // example output: page=2&limit=10, 1-10 page 1 will be skipped, 11-20 page 2, 21-30 page 3
     this.query = this.query.skip(skip).limit(limit);
 
     return this;
