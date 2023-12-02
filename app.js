@@ -1,5 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
+const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
 
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -8,13 +10,32 @@ const userRouter = require('./routes/userRoutes');
 
 const app = express();
 
-// 1) MIDDLEWARES
+// MIDDLEWARES
 
+// Security HTTP Headers
+app.use(helmet());
+
+// Development logging
 if (process.env.NODE_ENV === 'development')
   // NOTE: Morgan function also returns a call back function with the req,res and next
   app.use(morgan('dev'));
 
-app.use(express.json());
+// Limit to one hundred limit in one hour per IP
+const limiter = rateLimit({
+  max: 100,
+  windowMs: 60 * 60 * 1000,
+  message: 'Too many requests from this IP, please try again in an hour',
+});
+
+// Set limiter only for /api route
+app.use('/api', limiter);
+
+// Body parser, reading data from body into req.body
+app.use(
+  express.json({
+    limit: '16kb',
+  }),
+);
 
 // middle to create access to static files
 app.use(express.static(`${__dirname}/public`));

@@ -13,7 +13,6 @@ exports.aliasTopTours = (req, res, next) => {
 
 // 2) ROUTE HANDLERS
 exports.getAllTours = catchAsync(async (req, res) => {
-  console.log(req.query);
   // {
   // DEPRECATED
   // if (req.query.page) {
