@@ -174,6 +174,15 @@ tourSchema.pre(/^find/, function (next) {
   next();
 });
 
+// POPULATE MIDDLEWARE
+tourSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'guides',
+    select: '-__v -passwordChangedAt',
+  });
+  next();
+});
+
 // runs after the .find() method is EXECUTED
 tourSchema.post(/^find/, function (docs, next) {
   console.log(`Query took ${Date.now() - this.start} milliseconds`);
