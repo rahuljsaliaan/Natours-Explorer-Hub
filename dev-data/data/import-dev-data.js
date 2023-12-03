@@ -5,12 +5,11 @@ const dotenv = require('dotenv');
 const Tour = require('../../models/tourModel');
 
 // Setting environment variables
+// NOTE: This is done because we are not running the application through npm start script, so we need to set the environment variables manually
 dotenv.config({ path: `${__dirname}../../../config.env` });
 
 // Reading the tours data from the file
-const tours = JSON.parse(
-  fs.readFileSync(`${__dirname}/tours-simple.json`, 'utf-8'),
-);
+const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours.json`, 'utf-8'));
 
 // Connecting to Database
 const DB = process.env.DATABASE.replace(
