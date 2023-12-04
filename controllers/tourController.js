@@ -2,6 +2,7 @@ const Tour = require('../models/tourModel');
 const APIFeatures = require('../utils/APIFeatures');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
+const { deleteOne } = require('./handlerFactory');
 
 // 1) MIDDLEWARE HANDLERS
 exports.aliasTopTours = (req, res, next) => {
@@ -98,17 +99,7 @@ exports.updateTour = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.deleteTour = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findByIdAndDelete(req.params.id);
-
-  if (!tour)
-    return next(new AppError(`No tour found with ID: ${req.params.id}`, 404));
-
-  res.status(204).json({
-    status: 'success',
-    data: null,
-  });
-});
+exports.deleteTour = deleteOne(Tour);
 
 // Aggregation Pipeline
 exports.getTourStats = catchAsync(async (req, res) => {
