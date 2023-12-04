@@ -2,7 +2,7 @@ const Tour = require('../models/tourModel');
 const APIFeatures = require('../utils/APIFeatures');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
-const { deleteOne } = require('./handlerFactory');
+const { deleteOne, updateOne, createOne } = require('./handlerFactory');
 
 // 1) MIDDLEWARE HANDLERS
 exports.aliasTopTours = (req, res, next) => {
@@ -65,39 +65,14 @@ exports.getTour = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.createTour = catchAsync(async (req, res) => {
-  // const newTour = new Tour({
-  //   /*data*/
-  // });
-  // newTour.save()
+// const newTour = new Tour({
+//   /*data*/
+// });
+// newTour.save()
 
-  const newTour = await Tour.create(req.body);
+exports.createTour = createOne(Tour);
 
-  res.status(201).json({
-    status: 'success',
-    data: {
-      newTour,
-    },
-  });
-});
-
-exports.updateTour = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
-    // The updated document will be returned
-    new: true,
-    runValidators: true,
-  });
-
-  if (!tour)
-    return next(new AppError(`No tour found with ID: ${req.params.id}`, 404));
-
-  res.status(200).json({
-    status: 'success',
-    data: {
-      tour,
-    },
-  });
-});
+exports.updateTour = updateOne(Tour);
 
 exports.deleteTour = deleteOne(Tour);
 
