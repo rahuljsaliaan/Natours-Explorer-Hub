@@ -1,8 +1,12 @@
 const Tour = require('../models/tourModel');
-const APIFeatures = require('../utils/APIFeatures');
-const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
-const { deleteOne, updateOne, createOne } = require('./handlerFactory');
+const {
+  deleteOne,
+  updateOne,
+  createOne,
+  getOne,
+  getAll,
+} = require('./handlerFactory');
 
 // 1) MIDDLEWARE HANDLERS
 exports.aliasTopTours = (req, res, next) => {
@@ -13,57 +17,9 @@ exports.aliasTopTours = (req, res, next) => {
 };
 
 // 2) ROUTE HANDLERS
-exports.getAllTours = catchAsync(async (req, res) => {
-  // {
-  // DEPRECATED
-  // if (req.query.page) {
-  //   // NOTE: The reason for called the countDocuments on the Tour model because the query might have different sets of values compared to original sets of values in the collection
-  //   const numTours = await Tour.countDocuments();
-  //   if (skip >= numTours) throw new Error('This page does not exist');
-  // }
-  // const query = Tour.find()
-  //   .where('duration')
-  //   .equals(5)
-  //   .where('difficulty')
-  //   .equals('easy');
-  // }
+exports.getAllTours = getAll(Tour);
 
-  // EXECUTE QUERY
-  // PARAMETERS: query: return by the Tour modal, queryString: the query property of the req object
-  const features = new APIFeatures(Tour.find(), req.query)
-    .filter()
-    .sort()
-    .limitFields()
-    .paginate();
-
-  const tours = await features.query;
-
-  // SEND RESPONSE
-  res.status(200).json({
-    // jsend format
-    status: 'success',
-    results: tours.length,
-    data: {
-      tours,
-    },
-  });
-});
-
-exports.getTour = catchAsync(async (req, res, next) => {
-  // Tour.findOne({_id: req.params.id})
-  // get tour and virtual populated data (reviews)
-  const tour = await Tour.findById(req.params.id).populate('reviews');
-
-  if (!tour)
-    return next(new AppError(`No tour found with ID: ${req.params.id}`, 404));
-
-  res.status(200).json({
-    status: 'success',
-    data: {
-      tour,
-    },
-  });
-});
+exports.getTour = getOne(Tour, { path: 'reviews' });
 
 // const newTour = new Tour({
 //   /*data*/

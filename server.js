@@ -5,6 +5,7 @@ const dotenv = require('dotenv');
 process.on('uncaughtException', (error) => {
   console.log('UNCAUGHT EXCEPTION 💥 Shutting down...');
   console.error(error.name, error.message);
+  console.error('🪜 ', error.stack);
   // NOTE: Stopping the node application in unhandled rejection is optional but here it is mandatory as in uncaught exception the entire node process will be in unclean state that is why we need to stop the application
   process.exit(1);
 });
