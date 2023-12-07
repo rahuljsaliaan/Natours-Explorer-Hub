@@ -17,26 +17,26 @@ const router = express.Router();
 // MIDDLEWARE
 // router.param('id', checkId);
 
-router.use('/:tourId/reviews', reviewRouter);
+router
+  .route('/')
+  .get(getAllTours)
+  .post(protect, restrictTo('admin'), createTour);
 
-// ROUTES
+router.use(protect, restrictTo('admin'));
+
+router
+  .route('/:id')
+  .get(restrictTo('lead-guide', 'guide'), getTour)
+  .patch(updateTour)
+  .delete(restrictTo('lead-guide'), deleteTour);
+
+router.use('/:tourId/reviews', reviewRouter);
 
 router.route('/top-5-cheap').get(aliasTopTours, getAllTours);
 
 router.route('/tour-stats').get(getTourStats);
 
 router.route('/monthly-plan/:year').get(getMonthlyPlan);
-
-router
-  .route('/')
-  .get(getAllTours)
-  .post(protect, restrictTo('admin'), createTour);
-
-router
-  .route('/:id')
-  .get(protect, restrictTo('admin', 'lead-guide', 'guide'), getTour)
-  .patch(protect, restrictTo('admin'), updateTour)
-  .delete(protect, restrictTo('admin', 'lead-guide'), deleteTour);
 
 // router
 //   .route('/:tourId/reviews')
