@@ -27,12 +27,15 @@ router.route('/tour-stats').get(getTourStats);
 
 router.route('/monthly-plan/:year').get(getMonthlyPlan);
 
-router.route('/').get(protect, getAllTours).post(createTour);
+router
+  .route('/')
+  .get(getAllTours)
+  .post(protect, restrictTo('admin'), createTour);
 
 router
   .route('/:id')
-  .get(getTour)
-  .patch(updateTour)
+  .get(protect, restrictTo('admin', 'lead-guide', 'guide'), getTour)
+  .patch(protect, restrictTo('admin'), updateTour)
   .delete(protect, restrictTo('admin', 'lead-guide'), deleteTour);
 
 // router

@@ -14,6 +14,12 @@ const filterObj = (obj, ...allowedFields) => {
 
 exports.getAllUsers = getAll(User);
 
+exports.getMe = (req, res, next) => {
+  console.log(req.user);
+  req.params.id = req.user._id;
+  next();
+};
+
 exports.updateMe = catchAsync(async (req, res, next) => {
   // 1) CREATE ERROR IF USER POSTS PASSWORD DATA
   if (req.body.password || req.body.passwordConfirm)
@@ -51,7 +57,7 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getUser = getOne();
+exports.getUser = getOne(User);
 
 exports.createUser = (req, res) => {
   res.status(500).json({
