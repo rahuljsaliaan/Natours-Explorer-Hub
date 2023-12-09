@@ -22,6 +22,8 @@ router
   .get(getAllTours)
   .post(protect, restrictTo('admin'), createTour);
 
+router.use('/:tourId/reviews', reviewRouter);
+
 router.use(protect, restrictTo('admin'));
 
 router
@@ -29,8 +31,6 @@ router
   .get(restrictTo('lead-guide', 'guide'), getTour)
   .patch(updateTour)
   .delete(restrictTo('lead-guide'), deleteTour);
-
-router.use('/:tourId/reviews', reviewRouter);
 
 router.route('/top-5-cheap').get(aliasTopTours, getAllTours);
 

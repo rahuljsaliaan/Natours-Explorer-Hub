@@ -136,6 +136,11 @@ const tourSchema = new mongoose.Schema(
   },
 );
 
+// NOTE: Always index with high read write ratio do not index the data with the high write read ratio
+// Index the price field in ascending order and ratingsAverage in descending order
+tourSchema.index({ price: 1, ratingsAverage: -1 });
+tourSchema.index({ slug: 1 });
+
 // VIRTUAL PROPERTIES  (To get a new property from the existing property through calculation)
 tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
