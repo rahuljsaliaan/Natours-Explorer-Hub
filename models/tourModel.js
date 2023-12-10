@@ -143,7 +143,7 @@ const tourSchema = new mongoose.Schema(
 tourSchema.index({ price: 1, ratingsAverage: -1 });
 tourSchema.index({ slug: 1 });
 // NOTE: The reason why we are using the 2d sphere index is because we are using the geo spatial data
-tourSchema.index({ startLocation: '2d' });
+tourSchema.index({ startLocation: '2dsphere' });
 
 // VIRTUAL PROPERTIES  (To get a new property from the existing property through calculation)
 tourSchema.virtual('durationWeeks').get(function () {
@@ -212,10 +212,13 @@ tourSchema.pre('aggregate', function (next) {
   // Adding a match stage to the beginning of the aggregation pipeline
 
   // NOTE: The reason we are accessing the pipeline though pipeline method is because the pipeline property is protected property which is denoted as _pipeline hence it is against the oop principal to access these properties directly and hence we access them using a getter method called pipeline
-  this.pipeline().unshift({
-    $match: { secretTour: { $ne: true } },
-  });
 
+  // Only run there is no geoSpacial aggregation involved
+  if (!(this.pipeline().length > 0 && '$geoNear' in this.pipeline()[0])) {
+    this.pipeline().unshift({
+      $match: { secretTour: { $ne: true } },
+    });
+  }
   next();
 });
 
