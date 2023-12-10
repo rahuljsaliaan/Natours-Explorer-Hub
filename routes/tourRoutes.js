@@ -8,6 +8,7 @@ const {
   deleteTour,
   getTourStats,
   getMonthlyPlan,
+  getToursWithin,
 } = require('../controllers/tourController');
 const reviewRouter = require('./reviewRoutes');
 const { protect, restrictTo } = require('../controllers/authController');
@@ -17,26 +18,30 @@ const router = express.Router();
 // MIDDLEWARE
 // router.param('id', checkId);
 
+router.use('/:tourId/reviews', reviewRouter);
+
+router.route('/top-5-cheap').get(aliasTopTours, getAllTours);
+router.route('/tour-stats').get(getTourStats);
+
+// /tours-within/200/center/23,-23/unit/km
+router
+  .route('/tours-within/:distance/center/:latlng/unit/:unit')
+  .get(getToursWithin);
+
 router
   .route('/')
   .get(getAllTours)
   .post(protect, restrictTo('admin'), createTour);
 
-router.use('/:tourId/reviews', reviewRouter);
-
-router.use(protect, restrictTo('admin'));
+router
+  .route('/monthly-plan/:year')
+  .get(protect, restrictTo('admin', 'lead-guide'), getMonthlyPlan);
 
 router
   .route('/:id')
-  .get(restrictTo('lead-guide', 'guide'), getTour)
-  .patch(updateTour)
-  .delete(restrictTo('lead-guide'), deleteTour);
-
-router.route('/top-5-cheap').get(aliasTopTours, getAllTours);
-
-router.route('/tour-stats').get(getTourStats);
-
-router.route('/monthly-plan/:year').get(getMonthlyPlan);
+  .get(protect, restrictTo('admin', 'lead-guide', 'guide'), getTour)
+  .patch(protect, restrictTo('admin'), updateTour)
+  .delete(protect, restrictTo('admin', 'lead-guide'), deleteTour);
 
 // router
 //   .route('/:tourId/reviews')

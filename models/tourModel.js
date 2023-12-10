@@ -142,6 +142,8 @@ const tourSchema = new mongoose.Schema(
 // Index the price field in ascending order and ratingsAverage in descending order
 tourSchema.index({ price: 1, ratingsAverage: -1 });
 tourSchema.index({ slug: 1 });
+// NOTE: The reason why we are using the 2d sphere index is because we are using the geo spatial data
+tourSchema.index({ startLocation: '2d' });
 
 // VIRTUAL PROPERTIES  (To get a new property from the existing property through calculation)
 tourSchema.virtual('durationWeeks').get(function () {
