@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
@@ -14,7 +15,15 @@ const reviewRouter = require('./routes/reviewRoutes');
 
 const app = express();
 
+// Setting up PUG
+app.set('view engine', 'pug');
+// NOTE: path.join will join the current directory with the views folder
+app.set('views', path.join(__dirname, 'views'));
+
 // MIDDLEWARES
+
+// middle to create access to static files
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Security HTTP Headers
 app.use(helmet());
@@ -61,15 +70,17 @@ app.use(
   }),
 );
 
-// middle to create access to static files
-app.use(express.static(`${__dirname}/public`));
-
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
   next();
 });
 
-// The root route middleware (mounting a new router on a route)
+// The route middleware (mounting a new router on a route)
+// Pug template
+app.get('/', (req, res) => {
+  res.status(200).render('base');
+});
+
 app.use('/api/v1/tours', tourRouter);
 
 app.use('/api/v1/users', userRouter);
