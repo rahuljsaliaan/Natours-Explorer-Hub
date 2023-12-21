@@ -21,13 +21,11 @@ exports.getTour = async (req, res) => {
     fields: 'review user rating',
   });
 
-  console.log(tour);
-
   // 2) Build template
 
   // 3) Render template using data from 1)
   res.status(200).render('tour', {
-    title: 'The Forest Hiker',
+    title: tour.name,
     tour,
   });
 };

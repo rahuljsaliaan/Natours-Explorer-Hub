@@ -1402,3 +1402,22 @@ body {
   -webkit-transform: translateY(-2px);
   transform: translateY(-2px);
 }
+
+.leaflet-popup-close-button {
+  display: none;
+}
+
+.leaflet-popup-content {
+  font-weight: bold;
+  color: #28b487;
+  font-size: 1.5em !important;
+  position: relative !important;
+}
+
+.leaflet-popup {
+  cursor: pointer;
+}
+
+.leaflet-popup:hover {
+  z-index: 5;
+}
