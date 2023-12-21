@@ -11,31 +11,37 @@ const signToken = (id) =>
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 
-const cookieOptions = {
-  expires: new Date(
-    // converting days to milliseconds
-    Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
-  ),
-  httpOnly: true,
-};
-
 const createTokenSend = (user, statusCode, res) => {
   const token = signToken(user._id);
+  const cookieExpiresInMilliseconds = new Date(
+    Date.now() +
+      process.env.JWT_COOKIE_EXPIRES_IN *
+        24 *
+        60 *
+        60 *
+        1000 /* Convert time in milliseconds */,
+  );
 
-  if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
-
-  res.cookie('jwt', token, cookieOptions);
-
-  const jsonResponse = {
-    status: 'success',
-    token,
+  const cookieOptions = {
+    expires: cookieExpiresInMilliseconds,
+    httpOnly: true,
+    secure: true,
+    sameSite: 'none',
   };
 
-  if (user.email && user.name)
-    jsonResponse.data = { email: user.email, name: user.name };
+  // Set a cookie
+  res.cookie('jwt', token, cookieOptions);
 
-  // SEND RESPONSE WITH TOKEN
-  res.status(statusCode).json(jsonResponse);
+  user.password =
+    undefined; /* Remove password from the response via /signup route */
+
+  res.status(statusCode).json({
+    status: 'success',
+    token,
+    data: {
+      user,
+    },
+  });
 };
 
 exports.signup = catchAsync(async (req, res, next) => {

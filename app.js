@@ -5,8 +5,9 @@ const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const hpp = require('hpp');
+const cookieParser = require('cookie-parser');
+const cors = require('cors');
 const xssClean = require('./utils/xssClean');
-
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 const tourRouter = require('./routes/tourRoutes');
@@ -15,6 +16,13 @@ const reviewRouter = require('./routes/reviewRoutes');
 const viewRouter = require('./routes/viewRoutes');
 
 const app = express();
+
+app.use(
+  cors({
+    origin: true,
+    credentials: true,
+  }),
+);
 
 // Setting up PUG
 app.set('view engine', 'pug');
@@ -32,12 +40,18 @@ app.use(
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", 'https://unpkg.com'],
+        scriptSrc: [
+          "'self'",
+          "'unsafe-inline'", // Allow inline scripts
+          'https://unpkg.com',
+          'https://cdnjs.cloudflare.com',
+        ],
         styleSrc: [
           "'self'",
           "'unsafe-inline'",
           'https://fonts.googleapis.com',
           'https://unpkg.com',
+          'https://cdnjs.cloudflare.com',
         ],
         imgSrc: [
           "'self'",
@@ -45,7 +59,7 @@ app.use(
           'https://unpkg.com',
           'https://*.tile.openstreetmap.org',
         ],
-        connectSrc: ["'self'"],
+        connectSrc: ["'self'", 'http://127.0.0.1:3000'],
         fontSrc: ["'self'", 'https://fonts.gstatic.com'],
         objectSrc: ["'none'"],
         mediaSrc: ["'self'"],
@@ -54,6 +68,7 @@ app.use(
     },
   }),
 );
+
 // Development logging
 if (process.env.NODE_ENV === 'development')
   // NOTE: Morgan function also returns a call back function with the req,res and next
@@ -75,6 +90,9 @@ app.use(
     limit: '16kb',
   }),
 );
+
+// Cookie Parser
+app.use(cookieParser());
 
 // Data sanitization against NoSQL data injection
 app.use(mongoSanitize());
@@ -98,6 +116,7 @@ app.use(
 
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
+  console.log(req.cookies);
   next();
 });
 

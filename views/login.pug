@@ -1,5 +1,9 @@
 extends base
 
+block append head
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.2/axios.js')
+    script(src='/js/login.js' defer)
+
 block content
     main.main
         .login-form
@@ -7,9 +11,9 @@ block content
             form.form
                 .form__group
                     label.form__label(for='email') Email address
-                    input#email.form__input(type='email' placeholder='you@example.com', required)
+                    input#email.form__input(type='email' placeholder='you@example.com', required, autocomplete='username')
                 .form__group.ma-bt-md
                     label.form__label(for='password') Password
-                    input#password.form__input(type='password' placeholder='••••••••', required, minlength='8')
+                    input#password.form__input(type='password' placeholder='••••••••', required, minlength='8' autocomplete='current-password')
                 .form__group
                     button.btn.btn--green Login
