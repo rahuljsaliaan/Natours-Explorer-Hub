@@ -13,7 +13,12 @@ const login = async (email, password) => {
       withCredentials: true,
     });
 
-    console.log(response);
+    if (response.data.status === 'success') {
+      alert('Logged in successfully!');
+      window.setTimeout(() => {
+        location.assign('/');
+      }, 1500);
+    }
   } catch (error) {
     console.log(error.response.data);
   }

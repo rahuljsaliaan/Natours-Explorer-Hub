@@ -129,6 +129,31 @@ exports.protect = catchAsync(async (req, res, next) => {
   next();
 });
 
+exports.isLoggedIn = catchAsync(async (req, res, next) => {
+  // 1) VERIFICATION OF TOKEN
+  if (req.cookies.jwt) {
+    const decoded = await promisify(jwt.verify)(
+      req.cookies.jwt,
+      process.env.JWT_SECRET,
+    );
+
+    // 2) CHECK IF USER STILL EXISTS
+    const currentUser = await User.findById(decoded.id);
+
+    if (!currentUser) return next();
+
+    // 3) CHECK IF USER CHANGED PASSWORD AFTER THE TOKEN WAS ISSUED
+    if (await currentUser.changedPasswordAfter(decoded.iat)) return next();
+
+    // THERE IS A LOGGED IN USER
+    // NOTE: res.locals is a way to pass data from middleware to the templates
+    res.locals.user = currentUser;
+    return next();
+  }
+
+  next();
+});
+
 exports.restrictTo =
   (...roles) =>
   (req, res, next) => {
