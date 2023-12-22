@@ -2,17 +2,23 @@
   "name": "natours",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
+  "targets": {
+    "main": false
+  },
   "scripts": {
     "start": "nodemon server.js",
     "start:prod": "SET NODE_ENV=production&&nodemon server.js",
     "debug": "node --inspect server.js",
     "import-data": "node ./dev-data/data/import-dev-data.js --import",
-    "delete-data": "node ./dev-data/data/import-dev-data.js --delete"
+    "delete-data": "node ./dev-data/data/import-dev-data.js --delete",
+    "watch:js": "parcel serve ./public/js/index.js --dist-dir ./public/js/bundled",
+    "build:js": "parcel build ./public/js/index.js --dist-dir ./public/js/bundled"
   },
   "author": "Rahul J",
   "license": "MIT",
   "dependencies": {
+    "axios": "^1.6.2",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -21,9 +27,11 @@
     "express": "^4.18.2",
     "express-mongo-sanitize": "^2.2.0",
     "express-rate-limit": "^7.1.5",
+    "form-data": "^4.0.0",
     "helmet": "^7.1.0",
     "hpp": "^0.2.3",
     "jsonwebtoken": "^9.0.2",
+    "leaflet": "^1.9.4",
     "mongoose": "^5.13.21",
     "morgan": "^1.10.0",
     "nodemailer": "^6.9.7",
@@ -33,6 +41,7 @@
     "xss": "^1.0.14"
   },
   "devDependencies": {
+    "buffer": "^6.0.3",
     "eslint": "^8.53.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^9.0.0",
@@ -42,6 +51,7 @@
     "eslint-plugin-prettier": "^5.0.1",
     "eslint-plugin-react": "^7.33.2",
     "nodemon": "^3.0.1",
+    "parcel": "^2.10.3",
     "prettier": "^3.0.3"
   },
   "engines": {
