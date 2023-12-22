@@ -1,0 +1,28 @@
+extends base
+
+block append head
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.2/axios.js')
+    script(src='/js/signup.js' defer)
+
+block content
+    main.main
+        .login-form
+            h2.heading-secondary.ma-bt-lg Create new account
+            form.form
+                .form__group
+                    label.form__label(for='name') Name
+                    input#name.form__input(type='text' placeholder='Name', required, autocomplete='username')
+                .form__group
+                    label.form__label(for='email') Email address
+                    input#email.form__input(type='email' placeholder='you@example.com', required, autocomplete='email')
+                .form__group
+                    label.form__label(for='name') Photo
+                    input#photo.form__input(type='file' placeholder='Name', required, autocomplete='username')
+                .form__group.ma-bt-md
+                    label.form__label(for='password') Password
+                    input#password.form__input(type='password' placeholder='••••••••', required, minlength='8' autocomplete='current-password')
+                .form__group.ma-bt-md
+                    label.form__label(for='password') Confirm Password
+                    input#confirm-password.form__input(type='password' placeholder='••••••••', required, minlength='8' autocomplete='current-password')
+                .form__group
+                    button.btn.btn--green Login
