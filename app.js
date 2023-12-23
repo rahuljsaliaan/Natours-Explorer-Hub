@@ -91,6 +91,9 @@ app.use(
   }),
 );
 
+// NOTE: This is used to parse the data coming from the form, Which is not recommended way of sending data to the server
+// app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+
 // Cookie Parser
 app.use(cookieParser());
 

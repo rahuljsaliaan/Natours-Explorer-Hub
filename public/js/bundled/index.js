@@ -579,41 +579,61 @@ var _parser = require("@babel/parser");
 var _login = require("./login");
 var _signup = require("./signup");
 var _leaflet = require("./leaflet");
+var _updateSettings = require("./updateSettings");
+var _alert = require("./alert");
 const loginForm = document.querySelector("#form-login");
 const signupForm = document.querySelector("#form-signup");
 const map = document.querySelector("#map");
 const logoutBtn = document.querySelector(".nav__el--logout");
+const updateUserDataForm = document.querySelector("#form-user-data");
+const updateUserPasswordForm = document.querySelector("#form-user-password");
+// Helper function to get form data
+const toCamelCase = (str)=>{
+    return str.replace(/-([a-z])/g, function(g) {
+        return g[1].toUpperCase();
+    });
+};
+const getFormData = (form, fields)=>{
+    return fields.reduce((obj, field)=>{
+        const element = form.querySelector(`#${field}`);
+        const camelCaseField = toCamelCase(field);
+        obj[camelCaseField] = element && element.value ? element.value : null;
+        return obj;
+    }, {});
+};
+// Helper function to get base64 from file
+const getBase64 = (file)=>{
+    return new Promise((resolve, reject)=>{
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = ()=>resolve(reader.result);
+        reader.onerror = (error)=>reject(error);
+    });
+};
 if (loginForm) loginForm.addEventListener("submit", (e)=>{
     e.preventDefault();
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+    const { email, password } = getFormData(loginForm, [
+        "email",
+        "password"
+    ]);
     (0, _login.login)(email, password);
 });
-if (signupForm) signupForm.addEventListener("submit", function(e) {
+if (signupForm) signupForm.addEventListener("submit", async (e)=>{
     e.preventDefault();
-    let name = document.querySelector("#name").value;
-    let email = document.querySelector("#email").value;
-    let photo = document.querySelector("#photo").files[0];
-    let password = document.querySelector("#password").value;
-    let confirmPassword = document.querySelector("#confirm-password").value;
-    function getBase64(file) {
-        return new Promise((resolve, reject)=>{
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = ()=>resolve(reader.result);
-            reader.onerror = (error)=>reject(error);
-        });
-    }
-    // Usage:
-    getBase64(photo).then((base64Photo)=>{
-        let data = {
-            name: name,
-            email: email,
-            photo: base64Photo,
-            password: password,
-            confirmPassword: confirmPassword
-        };
-        (0, _signup.signup)(data); // Assuming signup is a function defined elsewhere
+    const { name, email, photo, password, confirmPassword } = getFormData(signupForm, [
+        "name",
+        "email",
+        "photo",
+        "password",
+        "confirm-password"
+    ]);
+    const base64Photo = await getBase64(photo.files[0]);
+    (0, _signup.signup)({
+        name,
+        email,
+        photo: base64Photo,
+        password,
+        confirmPassword
     });
 });
 if (map) {
@@ -621,8 +641,39 @@ if (map) {
     (0, _leaflet.displayMap)(locations);
 }
 if (logoutBtn) logoutBtn.addEventListener("click", (0, _login.logout));
+if (updateUserDataForm) updateUserDataForm.addEventListener("submit", (e)=>{
+    e.preventDefault();
+    const { name, email } = getFormData(updateUserDataForm, [
+        "name",
+        "email"
+    ]);
+    // Assuming updateProfile is a function defined elsewhere
+    console.log(name, email);
+    (0, _updateSettings.updateUser)({
+        name,
+        email
+    });
+});
+if (updateUserPasswordForm) updateUserPasswordForm.addEventListener("submit", async (e)=>{
+    e.preventDefault();
+    const { currentPassword, password, passwordConfirm } = getFormData(updateUserPasswordForm, [
+        "current-password",
+        "password",
+        "password-confirm"
+    ]);
+    if (password !== passwordConfirm) return (0, _alert.showAlert)("error", "New password and confirm password do not match");
+    const btnSavePassword = document.querySelector("#btn-save-password");
+    btnSavePassword.textContent = "Updating...";
+    await (0, _updateSettings.updateUser)({
+        currentPassword,
+        password,
+        passwordConfirm
+    }, "password");
+    btnSavePassword.textContent = "Save password";
+    updateUserPasswordForm.reset();
+});
 
-},{"./login":"7yHem","./signup":"fNY2o","./leaflet":"xvuTT","@babel/parser":"j1WdR"}],"7yHem":[function(require,module,exports) {
+},{"./login":"7yHem","./signup":"fNY2o","./leaflet":"xvuTT","@babel/parser":"j1WdR","./updateSettings":"l3cGY","./alert":"kxdiQ"}],"7yHem":[function(require,module,exports) {
 /* eslint-disable */ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "login", ()=>login);
@@ -29010,6 +29061,28 @@ exports.parse = parse;
 exports.parseExpression = parseExpression;
 exports.tokTypes = tokTypes;
 
-},{}]},["dafvh","f2QDv"], "f2QDv", "parcelRequire11c7")
+},{}],"l3cGY":[function(require,module,exports) {
+// update Data
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "updateUser", ()=>updateUser);
+var _axios = require("axios");
+var _axiosDefault = parcelHelpers.interopDefault(_axios);
+var _alert = require("./alert");
+const updateUser = async (data, type = "data")=>{
+    try {
+        const url = type === "password" ? "http://127.0.0.1:3000/api/v1/users/updateMyPassword" : "http://127.0.0.1:3000/api/v1/users/updateMe";
+        const response = await (0, _axiosDefault.default)({
+            method: "PATCH",
+            url,
+            data
+        });
+        if (response.data.status === "success") (0, _alert.showAlert)("success", `${type[0].toLocaleUpperCase() + type.slice(1, -1)} updated successfully!`);
+    } catch (error) {
+        (0, _alert.showAlert)("error", error?.response?.data?.message || error.message);
+    }
+};
+
+},{"axios":"jo6P5","./alert":"kxdiQ","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["dafvh","f2QDv"], "f2QDv", "parcelRequire11c7")
 
 //# sourceMappingURL=index.js.map

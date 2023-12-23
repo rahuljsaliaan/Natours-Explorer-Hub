@@ -1,4 +1,5 @@
 const Tour = require('../models/tourModel');
+const User = require('../models/userModel');
 // const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 
@@ -51,5 +52,25 @@ exports.getAccount = catchAsync((req, res) => {
   // NOTE: we don't need to fetch the user because we already have it in the req.locals object through protect middleware
   res.status(200).render('account', {
     title: 'Your account',
+  });
+});
+
+exports.updateUserData = catchAsync(async (req, res, next) => {
+  const updatedUser = await User.findByIdAndUpdate(
+    req.user.id,
+    {
+      name: req.body.name,
+      email: req.body.email,
+    },
+    {
+      new: true,
+      runValidators: true,
+    },
+  );
+
+  res.status(200).render('account', {
+    title: 'Your account',
+    // NOTE: we are passing the updated user to the template so that the user can see the updated data
+    user: updatedUser,
   });
 });
