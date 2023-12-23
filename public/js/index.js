@@ -1,9 +1,13 @@
 import '@babel/parser';
+import { logout } from './login';
 import { login } from './login';
 import { signup } from './signup';
 import { displayMap } from './leaflet';
 
 const loginForm = document.querySelector('#form-login');
+const signupForm = document.querySelector('#form-signup');
+const map = document.querySelector('#map');
+const logoutBtn = document.querySelector('.nav__el--logout');
 
 if (loginForm)
   loginForm.addEventListener('submit', (e) => {
@@ -14,8 +18,6 @@ if (loginForm)
 
     login(email, password);
   });
-
-const signupForm = document.querySelector('#form-signup');
 
 if (signupForm)
   signupForm.addEventListener('submit', function (e) {
@@ -50,9 +52,9 @@ if (signupForm)
     });
   });
 
-const map = document.querySelector('#map');
-
 if (map) {
   const locations = JSON.parse(map.dataset.locations);
   displayMap(locations);
 }
+
+if (logoutBtn) logoutBtn.addEventListener('click', logout);

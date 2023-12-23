@@ -88,6 +88,18 @@ exports.login = catchAsync(async (req, res, next) => {
   createTokenSend(user, 200, res);
 });
 
+exports.logout = (req, res) => {
+  res.cookie('jwt', 'loggedout', {
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true,
+  });
+
+  res.status(200).json({
+    status: 'success',
+    data: null,
+  });
+};
+
 exports.protect = catchAsync(async (req, res, next) => {
   // 1) GETTING TOKEN AND CHECK IF IT'S THERE
   let token;
@@ -132,23 +144,29 @@ exports.protect = catchAsync(async (req, res, next) => {
 exports.isLoggedIn = catchAsync(async (req, res, next) => {
   // 1) VERIFICATION OF TOKEN
   if (req.cookies.jwt) {
-    const decoded = await promisify(jwt.verify)(
-      req.cookies.jwt,
-      process.env.JWT_SECRET,
-    );
+    // if (req.cookies.jwt === 'loggedout') return next();
 
-    // 2) CHECK IF USER STILL EXISTS
-    const currentUser = await User.findById(decoded.id);
+    try {
+      const decoded = await promisify(jwt.verify)(
+        req.cookies.jwt,
+        process.env.JWT_SECRET,
+      );
 
-    if (!currentUser) return next();
+      // 2) CHECK IF USER STILL EXISTS
+      const currentUser = await User.findById(decoded.id);
 
-    // 3) CHECK IF USER CHANGED PASSWORD AFTER THE TOKEN WAS ISSUED
-    if (await currentUser.changedPasswordAfter(decoded.iat)) return next();
+      if (!currentUser) return next();
 
-    // THERE IS A LOGGED IN USER
-    // NOTE: res.locals is a way to pass data from middleware to the templates
-    res.locals.user = currentUser;
-    return next();
+      // 3) CHECK IF USER CHANGED PASSWORD AFTER THE TOKEN WAS ISSUED
+      if (await currentUser.changedPasswordAfter(decoded.iat)) return next();
+
+      // THERE IS A LOGGED IN USER
+      // NOTE: res.locals is a way to pass data from middleware to the templates
+      res.locals.user = currentUser;
+      return next();
+    } catch (error) {
+      return next();
+    }
   }
 
   next();

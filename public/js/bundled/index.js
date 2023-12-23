@@ -580,13 +580,15 @@ var _login = require("./login");
 var _signup = require("./signup");
 var _leaflet = require("./leaflet");
 const loginForm = document.querySelector("#form-login");
+const signupForm = document.querySelector("#form-signup");
+const map = document.querySelector("#map");
+const logoutBtn = document.querySelector(".nav__el--logout");
 if (loginForm) loginForm.addEventListener("submit", (e)=>{
     e.preventDefault();
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
     (0, _login.login)(email, password);
 });
-const signupForm = document.querySelector("#form-signup");
 if (signupForm) signupForm.addEventListener("submit", function(e) {
     e.preventDefault();
     let name = document.querySelector("#name").value;
@@ -614,16 +616,17 @@ if (signupForm) signupForm.addEventListener("submit", function(e) {
         (0, _signup.signup)(data); // Assuming signup is a function defined elsewhere
     });
 });
-const map = document.querySelector("#map");
 if (map) {
     const locations = JSON.parse(map.dataset.locations);
     (0, _leaflet.displayMap)(locations);
 }
+if (logoutBtn) logoutBtn.addEventListener("click", (0, _login.logout));
 
 },{"./login":"7yHem","./signup":"fNY2o","./leaflet":"xvuTT","@babel/parser":"j1WdR"}],"7yHem":[function(require,module,exports) {
 /* eslint-disable */ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "login", ()=>login);
+parcelHelpers.export(exports, "logout", ()=>logout);
 var _axios = require("axios");
 var _axiosDefault = parcelHelpers.interopDefault(_axios);
 var _alert = require("./alert");
@@ -646,6 +649,17 @@ const login = async (email, password)=>{
         }
     } catch (error) {
         (0, _alert.showAlert)("error", error.response.data.message || error.message);
+    }
+};
+const logout = async ()=>{
+    try {
+        const response = await (0, _axiosDefault.default)({
+            method: "GET",
+            url: "http://127.0.0.1:3000/api/v1/users/logout"
+        });
+        if (response.data.status === "success") location.reload(true);
+    } catch (error) {
+        (0, _alert.showAlert)("error", "Error logging out! Try again.");
     }
 };
 
