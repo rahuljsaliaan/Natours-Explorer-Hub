@@ -4,10 +4,13 @@ const {
   getTour,
   getLoginForm,
   getSignupForm,
+  getAccount,
 } = require('../controllers/viewsController');
-const { isLoggedIn } = require('../controllers/authController');
+const { isLoggedIn, protect } = require('../controllers/authController');
 
 const router = express.Router();
+
+router.get('/me', protect, getAccount);
 
 router.use(isLoggedIn);
 

@@ -1421,6 +1421,12 @@ body {
   transform: translateY(-2px);
 }
 
+.link--blue {
+  color: blue;
+  cursor: pointer;
+  text-decoration: none;
+}
+
 .leaflet-popup-close-button {
   display: none;
 }

@@ -46,3 +46,10 @@ exports.getSignupForm = catchAsync((req, res) => {
     title: 'Create your account',
   });
 });
+
+exports.getAccount = catchAsync((req, res) => {
+  // NOTE: we don't need to fetch the user because we already have it in the req.locals object through protect middleware
+  res.status(200).render('account', {
+    title: 'Your account',
+  });
+});
