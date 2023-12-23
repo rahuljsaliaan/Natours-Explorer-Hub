@@ -14,6 +14,7 @@ export const updateUser = async (data, type = 'data') => {
       method: 'PATCH',
       url,
       data,
+      type: `${type === 'data' ? 'multipart/form-data' : 'application/json'}`,
     });
 
     if (response.data.status === 'success')

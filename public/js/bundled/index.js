@@ -643,16 +643,17 @@ if (map) {
 if (logoutBtn) logoutBtn.addEventListener("click", (0, _login.logout));
 if (updateUserDataForm) updateUserDataForm.addEventListener("submit", (e)=>{
     e.preventDefault();
+    const form = new FormData();
     const { name, email } = getFormData(updateUserDataForm, [
         "name",
         "email"
     ]);
+    const photo = document.querySelector("#photo").files[0];
+    form.append("name", name);
+    form.append("email", email);
+    form.append("photo", photo);
     // Assuming updateProfile is a function defined elsewhere
-    console.log(name, email);
-    (0, _updateSettings.updateUser)({
-        name,
-        email
-    });
+    (0, _updateSettings.updateUser)(form);
 });
 if (updateUserPasswordForm) updateUserPasswordForm.addEventListener("submit", async (e)=>{
     e.preventDefault();
@@ -29075,7 +29076,8 @@ const updateUser = async (data, type = "data")=>{
         const response = await (0, _axiosDefault.default)({
             method: "PATCH",
             url,
-            data
+            data,
+            type: `${type === "data" ? "multipart/form-data" : "application/json"}`
         });
         if (response.data.status === "success") (0, _alert.showAlert)("success", `${type[0].toLocaleUpperCase() + type.slice(1, -1)} updated successfully!`);
     } catch (error) {

@@ -69,11 +69,18 @@ if (logoutBtn) logoutBtn.addEventListener('click', logout);
 if (updateUserDataForm) {
   updateUserDataForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    const { name, email } = getFormData(updateUserDataForm, ['name', 'email']);
-    // Assuming updateProfile is a function defined elsewhere
+    const form = new FormData();
 
-    console.log(name, email);
-    updateUser({ name, email });
+    const { name, email } = getFormData(updateUserDataForm, ['name', 'email']);
+
+    const photo = document.querySelector('#photo').files[0];
+
+    form.append('name', name);
+    form.append('email', email);
+    form.append('photo', photo);
+
+    // Assuming updateProfile is a function defined elsewhere
+    updateUser(form);
   });
 }
 
