@@ -34,7 +34,7 @@ export const logout = async () => {
     });
 
     if (response.data.status === 'success') {
-      location.reload(true);
+      location.assign('/');
     }
   } catch (error) {
     showAlert('error', 'Error logging out! Try again.');

@@ -708,7 +708,7 @@ const logout = async ()=>{
             method: "GET",
             url: "http://127.0.0.1:3000/api/v1/users/logout"
         });
-        if (response.data.status === "success") location.reload(true);
+        if (response.data.status === "success") location.assign("/");
     } catch (error) {
         (0, _alert.showAlert)("error", "Error logging out! Try again.");
     }
