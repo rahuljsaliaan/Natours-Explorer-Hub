@@ -1,5 +1,6 @@
 const path = require('path');
 const express = require('express');
+const compression = require('compression');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
@@ -61,7 +62,7 @@ app.use(
           'https://unpkg.com',
           'https://*.tile.openstreetmap.org',
         ],
-        connectSrc: ["'self'", 'http://127.0.0.1:3000'],
+        connectSrc: ["'self'"],
         fontSrc: ["'self'", 'https://fonts.gstatic.com'],
         objectSrc: ["'none'"],
         mediaSrc: ["'self'"],
@@ -123,6 +124,8 @@ app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
   next();
 });
+
+app.use(compression());
 
 // The route middleware (mounting a new router on a route)
 // Pug template

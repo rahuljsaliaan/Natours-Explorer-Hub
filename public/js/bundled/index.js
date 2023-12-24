@@ -715,7 +715,6 @@ if (resetPasswordForm) {
 if (btnBookTour) btnBookTour.addEventListener("click", async (e)=>{
     e.target.textContent = "Processing...";
     const { tourId } = e.target.dataset;
-    console.log(e.target.dataset);
     await (0, _stripe.bookTour)(tourId);
     e.target.textContent = "Book tour now!";
 });
@@ -13972,7 +13971,7 @@ const login = async (email, password)=>{
     try {
         const response = await (0, _axiosDefault.default)({
             method: "POST",
-            url: "http://127.0.0.1:3000/api/v1/users/login",
+            url: "/api/v1/users/login",
             data: {
                 email,
                 password
@@ -13993,7 +13992,7 @@ const logout = async ()=>{
     try {
         const response = await (0, _axiosDefault.default)({
             method: "GET",
-            url: "http://127.0.0.1:3000/api/v1/users/logout"
+            url: "/api/v1/users/logout"
         });
         if (response.data.status === "success") location.assign("/");
     } catch (error) {
@@ -18420,7 +18419,7 @@ const signup = async (data)=>{
     try {
         const response = await (0, _axiosDefault.default)({
             method: "post",
-            url: "http://127.0.0.1:3000/api/v1/users/signup",
+            url: "/api/v1/users/signup",
             data
         });
         if (response.data.status === "success") {
@@ -29128,7 +29127,7 @@ var _axiosDefault = parcelHelpers.interopDefault(_axios);
 var _alert = require("./alert");
 const updateUser = async (data, type = "data")=>{
     try {
-        const url = type === "password" ? "http://127.0.0.1:3000/api/v1/users/updateMyPassword" : "http://127.0.0.1:3000/api/v1/users/updateMe";
+        const url = type === "password" ? "/api/v1/users/updateMyPassword" : "/api/v1/users/updateMe";
         const response = await (0, _axiosDefault.default)({
             method: "PATCH",
             url,
@@ -29152,14 +29151,13 @@ var _axiosDefault = parcelHelpers.interopDefault(_axios);
 var _alert = require("./alert");
 const resetPassword = async (data, token)=>{
     try {
-        console.log(token);
         if (!token) {
             location.assign("/");
             return (0, _alert.showAlert)("error", "Invalid token");
         }
         const response = await (0, _axiosDefault.default)({
             method: "PATCH",
-            url: `http://127.0.0.1:3000/api/v1/users/resetPassword/${token}`,
+            url: `/api/v1/users/resetPassword/${token}`,
             data
         });
         if (response.data.status === "success") {
@@ -29184,7 +29182,7 @@ const forgotPassword = async (data)=>{
     try {
         const response = await (0, _axiosDefault.default)({
             method: "POST",
-            url: `http://127.0.0.1:3000/forgotPassword`,
+            url: `/forgotPassword`,
             data
         });
         if (response.data.status === "success") {
@@ -29211,7 +29209,7 @@ const bookTour = async (tourId)=>{
         // 1) Get checkout session from API
         const session = await (0, _axiosDefault.default)({
             method: "GET",
-            url: `http://127.0.0.1:3000/api/v1/bookings/checkout-session/${tourId}`
+            url: `/api/v1/bookings/checkout-session/${tourId}`
         });
         // 2) Create checkout form + charge credit card
         const checkout = await stripe.redirectToCheckout({

@@ -3,7 +3,6 @@ import { showAlert } from './alert';
 
 export const resetPassword = async (data, token) => {
   try {
-    console.log(token);
     if (!token) {
       location.assign('/');
       return showAlert('error', 'Invalid token');
@@ -11,7 +10,7 @@ export const resetPassword = async (data, token) => {
 
     const response = await axios({
       method: 'PATCH',
-      url: `http://127.0.0.1:3000/api/v1/users/resetPassword/${token}`,
+      url: `/api/v1/users/resetPassword/${token}`,
       data,
     });
 

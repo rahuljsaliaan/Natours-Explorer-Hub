@@ -182,7 +182,6 @@ if (btnBookTour) {
   btnBookTour.addEventListener('click', async (e) => {
     e.target.textContent = 'Processing...';
     const { tourId } = e.target.dataset;
-    console.log(e.target.dataset);
     await bookTour(tourId);
     e.target.textContent = 'Book tour now!';
   });

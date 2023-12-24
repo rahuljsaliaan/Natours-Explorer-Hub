@@ -5,7 +5,7 @@ export const forgotPassword = async (data) => {
   try {
     const response = await axios({
       method: 'POST',
-      url: `http://127.0.0.1:3000/forgotPassword`,
+      url: `/forgotPassword`,
       data,
     });
 
