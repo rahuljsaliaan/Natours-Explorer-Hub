@@ -24,9 +24,13 @@ app.use('trust proxy');
 app.use(
   cors({
     origin: true,
+    // origin: 'https://natours-frontend.com/', // example: for only one domain
     credentials: true,
   }),
 );
+
+// NOTE: The preflight phase is the phase where the browser checks if the request is safe to send, that is why we need to set the cors headers for the preflight phase
+app.options('*', cors());
 
 // Setting up PUG
 app.set('view engine', 'pug');
