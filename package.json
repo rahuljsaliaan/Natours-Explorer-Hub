@@ -1,7 +1,7 @@
 {
   "name": "natours",
   "version": "1.0.0",
-  "description": "",
+  "description": "Natours: A robust platform for booking diverse tours led by experienced guides. Discover the wonders of the natural world, ranging from thrilling adventures to peaceful nature walks. Your go-to choice for curated explorations",
   "main": "app.js",
   "scripts": {
     "start": "node server.js",
