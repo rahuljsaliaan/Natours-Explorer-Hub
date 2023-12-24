@@ -12,7 +12,7 @@ html
             script(src='/js/bundled/index.js' type='module' defer)
             title Natours | #{title}
 
-body
+body(data-alert=`${alert ? alert: ''}`)
     // HEADER
     include _header
 

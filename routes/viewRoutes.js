@@ -7,6 +7,7 @@ const {
   getAccount,
   getResetPasswordForm,
   getMyTours,
+  alerts,
   // updateUserData,
 } = require('../controllers/viewsController');
 const {
@@ -20,6 +21,8 @@ const router = express.Router();
 
 // NOTE: We don't need this route because we are using the API to update the user data
 // router.post('/submit-user-data', protect, updateUserData);
+
+router.use(alerts);
 
 router.get('/', isLoggedIn, /*createBookingCheckout ,*/ getOverview);
 
