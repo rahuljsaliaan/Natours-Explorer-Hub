@@ -95,9 +95,11 @@ if (map) {
 if (logoutBtn) logoutBtn.addEventListener('click', logout);
 
 if (updateUserDataForm) {
-  updateUserDataForm.addEventListener('submit', (e) => {
+  updateUserDataForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const form = new FormData();
+
+    const photoImg = updateUserDataForm.querySelector('#photo-img');
 
     const { name, email } = getFormData(updateUserDataForm, ['name', 'email']);
 
@@ -108,7 +110,8 @@ if (updateUserDataForm) {
     form.append('photo', photo);
 
     // Assuming updateProfile is a function defined elsewhere
-    updateUser(form);
+    const user = await updateUser(form);
+    photoImg.src = `/img/users/${user.photo}`;
   });
 }
 

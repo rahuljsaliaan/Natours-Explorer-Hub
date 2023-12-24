@@ -11,20 +11,26 @@ module.exports = class Email {
   }
 
   newTransport() {
-    if (process.env.NODE_ENV === 'production') {
-      // Sendgrid
-      return 1;
-    }
-
-    // mailtrap
+    // if (process.env.NODE_ENV === 'production') {
+    // Sendgrid
     return nodemailer.createTransport({
-      host: process.env.EMAIL_HOST,
-      port: process.env.EMAIL_PORT,
+      service: 'Mailjet',
       auth: {
-        user: process.env.EMAIL_USERNAME,
-        pass: process.env.EMAIL_PASSWORD,
+        user: process.env.MAILJET_API_KEY,
+        pass: process.env.MAILJET_API_SECRET,
       },
     });
+    // }
+
+    // mailtrap
+    // return nodemailer.createTransport({
+    //   host: process.env.EMAIL_HOST,
+    //   port: process.env.EMAIL_PORT,
+    //   auth: {
+    //     user: process.env.EMAIL_USERNAME,
+    //     pass: process.env.EMAIL_PASSWORD,
+    //   },
+    // });
   }
 
   // Send the actual email

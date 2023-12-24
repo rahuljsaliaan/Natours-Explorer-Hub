@@ -36,19 +36,19 @@ exports.getTour = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getLoginForm = catchAsync((req, res) => {
+exports.getLoginForm = catchAsync(async (req, res) => {
   res.status(200).render('login', {
     title: 'Log into your account',
   });
 });
 
-exports.getSignupForm = catchAsync((req, res) => {
+exports.getSignupForm = catchAsync(async (req, res) => {
   res.status(200).render('signup', {
     title: 'Create your account',
   });
 });
 
-exports.getAccount = catchAsync((req, res) => {
+exports.getAccount = catchAsync(async (req, res) => {
   // NOTE: we don't need to fetch the user because we already have it in the req.locals object through protect middleware
   res.status(200).render('account', {
     title: 'Your account',
@@ -75,7 +75,7 @@ exports.updateUserData = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getResetPasswordForm = catchAsync((req, res) => {
+exports.getResetPasswordForm = catchAsync(async (req, res) => {
   res.status(200).render('resetPassword', {
     title: 'Reset your password',
     token: req.params.token,

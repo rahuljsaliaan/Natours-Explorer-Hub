@@ -16,23 +16,21 @@ const {
 
 const router = express.Router();
 
+// NOTE: We don't need this route because we are using the API to update the user data
+// router.post('/submit-user-data', protect, updateUserData);
+
+router.get('/', isLoggedIn, getOverview);
+
 router.get('/me', protect, getAccount);
 
 router.post('/forgotPassword', forgotPassword);
 
-// NOTE: We don't need this route because we are using the API to update the user data
-// router.post('/submit-user-data', protect, updateUserData);
+router.get('/login', isLoggedIn, getLoginForm);
 
-router.use(isLoggedIn);
+router.get('/tour/:slug', isLoggedIn, getTour);
 
-router.get('/', getOverview);
+router.get('/signup', isLoggedIn, getSignupForm);
 
-router.get('/tour/:slug', getTour);
-
-router.get('/login', getLoginForm);
-
-router.get('/signup', getSignupForm);
-
-router.get('/resetPassword/:token', getResetPasswordForm);
+router.get('/resetPassword/:token', isLoggedIn, getResetPasswordForm);
 
 module.exports = router;

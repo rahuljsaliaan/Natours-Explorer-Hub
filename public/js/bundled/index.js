@@ -653,9 +653,10 @@ if (map) {
     (0, _leaflet.displayMap)(locations);
 }
 if (logoutBtn) logoutBtn.addEventListener("click", (0, _login.logout));
-if (updateUserDataForm) updateUserDataForm.addEventListener("submit", (e)=>{
+if (updateUserDataForm) updateUserDataForm.addEventListener("submit", async (e)=>{
     e.preventDefault();
     const form = new FormData();
+    const photoImg = updateUserDataForm.querySelector("#photo-img");
     const { name, email } = getFormData(updateUserDataForm, [
         "name",
         "email"
@@ -665,7 +666,8 @@ if (updateUserDataForm) updateUserDataForm.addEventListener("submit", (e)=>{
     form.append("email", email);
     form.append("photo", photo);
     // Assuming updateProfile is a function defined elsewhere
-    (0, _updateSettings.updateUser)(form);
+    const user = await (0, _updateSettings.updateUser)(form);
+    photoImg.src = `/img/users/${user.photo}`;
 });
 if (updateUserPasswordForm) updateUserPasswordForm.addEventListener("submit", async (e)=>{
     e.preventDefault();
@@ -13960,7 +13962,7 @@ const login = async (email, password)=>{
         if (response.data.status === "success") {
             (0, _alert.showAlert)("success", "Logged in successfully!");
             window.setTimeout(()=>{
-                location.assign("/");
+            // location.assign('/');
             }, 1500);
         }
     } catch (error) {
@@ -29114,6 +29116,8 @@ const updateUser = async (data, type = "data")=>{
             type: `${type === "data" ? "multipart/form-data" : "application/json"}`
         });
         if (response.data.status === "success") (0, _alert.showAlert)("success", `${type[0].toLocaleUpperCase() + type.slice(1)} updated successfully!`);
+        const { data: { data: { user } } } = response;
+        return user;
     } catch (error) {
         (0, _alert.showAlert)("error", error?.response?.data?.message || error.message);
     }

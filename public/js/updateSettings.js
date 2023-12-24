@@ -22,6 +22,14 @@ export const updateUser = async (data, type = 'data') => {
         'success',
         `${type[0].toLocaleUpperCase() + type.slice(1)} updated successfully!`,
       );
+
+    const {
+      data: {
+        data: { user },
+      },
+    } = response;
+
+    return user;
   } catch (error) {
     showAlert('error', error?.response?.data?.message || error.message);
   }
