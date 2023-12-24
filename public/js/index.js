@@ -7,6 +7,7 @@ import { updateUser } from './updateSettings';
 import { showAlert } from './alert';
 import { resetPassword } from './resetPassword';
 import { forgotPassword } from './forgotPassword';
+import { bookTour } from './stripe';
 
 const loginForm = document.querySelector('#form-login');
 const signupForm = document.querySelector('#form-signup');
@@ -16,6 +17,8 @@ const updateUserDataForm = document.querySelector('#form-user-data');
 const updateUserPasswordForm = document.querySelector('#form-user-password');
 const resetPasswordForm = document.querySelector('#form-reset-password');
 const btnForgotPassword = document.querySelector('#btn-forgot-password');
+const btnBookTour = document.querySelector('#btn-book-tour');
+const btnShowInfo = document.querySelector('#btn-show-info');
 
 // Helper function to convert kebab-case to camelCase
 const toCamelCase = (str) => {
@@ -172,5 +175,27 @@ if (resetPasswordForm) {
     await resetPassword({ password, passwordConfirm }, token);
 
     btnSavePassword.textContent = 'Save password';
+  });
+}
+
+if (btnBookTour) {
+  btnBookTour.addEventListener('click', async (e) => {
+    e.target.textContent = 'Processing...';
+    const { tourId } = e.target.dataset;
+    console.log(e.target.dataset);
+    await bookTour(tourId);
+    e.target.textContent = 'Book tour now!';
+  });
+}
+
+if (btnShowInfo) {
+  btnShowInfo.addEventListener('mouseenter', function () {
+    var infoBox = document.querySelector('.test-payment-info-box');
+    infoBox.classList.add('show');
+  });
+
+  btnShowInfo.addEventListener('mouseleave', function () {
+    var infoBox = document.querySelector('.test-payment-info-box');
+    infoBox.classList.remove('show');
   });
 }

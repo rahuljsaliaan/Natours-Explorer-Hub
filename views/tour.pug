@@ -2,6 +2,7 @@ extends base
 include _reviewCard
 
 block append head
+    script(src="https://js.stripe.com/v3/")
 
 mixin overviewBox(label, text, icon)
     .overview-box__detail
@@ -83,4 +84,18 @@ block content
             .cta__content
                 h2.heading-secondary What are you waiting for?
                 p.cta__text= `${tour.duration} days. 1 adventure. Infinite memories. Make it yours today!`
-                button.btn.btn--green.span-all-rows Book tour now!
+                if user
+                    button#btn-show-info Important Read before proceeding...!
+                    .test-payment-info-box
+                        span.heading-info Test Payment Information
+                        p.content-info For testing purposes, you can use the following credit card details:
+                        ul.test-payment-info
+                            li Card Number: 4242 4242 4242 4242
+                            li Expiry Date: Any future date
+                            li CVC: Any three digits
+                            li Billing Address: Should be of United States, not India
+                    button#btn-book-tour.btn.btn--green.span-all-rows(data-tour-id=`${tour._id}`) Book tour now!
+
+
+                else 
+                    a.btn.btn--green.span-all-rows(href='/login') Log in to book tour

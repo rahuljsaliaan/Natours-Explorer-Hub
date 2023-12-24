@@ -14,6 +14,7 @@ const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
 const viewRouter = require('./routes/viewRoutes');
+const bookingRouter = require('./routes/bookingRoutes');
 
 const app = express();
 
@@ -45,6 +46,7 @@ app.use(
           "'unsafe-inline'", // Allow inline scripts
           'https://unpkg.com',
           'https://cdnjs.cloudflare.com',
+          'https://js.stripe.com/v3/',
         ],
         styleSrc: [
           "'self'",
@@ -63,7 +65,7 @@ app.use(
         fontSrc: ["'self'", 'https://fonts.gstatic.com'],
         objectSrc: ["'none'"],
         mediaSrc: ["'self'"],
-        frameSrc: ["'none'"],
+        frameSrc: ["'self'", 'https://js.stripe.com/'],
       },
     },
   }),
@@ -131,6 +133,8 @@ app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 
 app.use('/api/v1/reviews', reviewRouter);
+
+app.use('/api/v1/bookings', bookingRouter);
 
 // Default route
 app.all('*', (req, res, next) => {

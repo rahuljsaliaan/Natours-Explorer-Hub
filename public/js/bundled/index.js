@@ -583,6 +583,7 @@ var _updateSettings = require("./updateSettings");
 var _alert = require("./alert");
 var _resetPassword = require("./resetPassword");
 var _forgotPassword = require("./forgotPassword");
+var _stripe = require("./stripe");
 const loginForm = document.querySelector("#form-login");
 const signupForm = document.querySelector("#form-signup");
 const map = document.querySelector("#map");
@@ -591,6 +592,8 @@ const updateUserDataForm = document.querySelector("#form-user-data");
 const updateUserPasswordForm = document.querySelector("#form-user-password");
 const resetPasswordForm = document.querySelector("#form-reset-password");
 const btnForgotPassword = document.querySelector("#btn-forgot-password");
+const btnBookTour = document.querySelector("#btn-book-tour");
+const btnShowInfo = document.querySelector("#btn-show-info");
 // Helper function to convert kebab-case to camelCase
 const toCamelCase = (str)=>{
     return str.replace(/-([a-z])/g, function(g) {
@@ -709,8 +712,25 @@ if (resetPasswordForm) {
         btnSavePassword.textContent = "Save password";
     });
 }
+if (btnBookTour) btnBookTour.addEventListener("click", async (e)=>{
+    e.target.textContent = "Processing...";
+    const { tourId } = e.target.dataset;
+    console.log(e.target.dataset);
+    await (0, _stripe.bookTour)(tourId);
+    e.target.textContent = "Book tour now!";
+});
+if (btnShowInfo) {
+    btnShowInfo.addEventListener("mouseenter", function() {
+        var infoBox = document.querySelector(".test-payment-info-box");
+        infoBox.classList.add("show");
+    });
+    btnShowInfo.addEventListener("mouseleave", function() {
+        var infoBox = document.querySelector(".test-payment-info-box");
+        infoBox.classList.remove("show");
+    });
+}
 
-},{"@babel/parser":"j1WdR","./login":"7yHem","./signup":"fNY2o","./leaflet":"xvuTT","./updateSettings":"l3cGY","./alert":"kxdiQ","./resetPassword":"eRWSh","./forgotPassword":"4l6TW"}],"j1WdR":[function(require,module,exports) {
+},{"@babel/parser":"j1WdR","./login":"7yHem","./signup":"fNY2o","./leaflet":"xvuTT","./updateSettings":"l3cGY","./alert":"kxdiQ","./resetPassword":"eRWSh","./forgotPassword":"4l6TW","./stripe":"10tSC"}],"j1WdR":[function(require,module,exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -13962,7 +13982,7 @@ const login = async (email, password)=>{
         if (response.data.status === "success") {
             (0, _alert.showAlert)("success", "Logged in successfully!");
             window.setTimeout(()=>{
-            // location.assign('/');
+                location.assign("/");
             }, 1500);
         }
     } catch (error) {
@@ -29178,6 +29198,32 @@ const forgotPassword = async (data)=>{
     }
 };
 
-},{"axios":"jo6P5","./alert":"kxdiQ","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["dafvh","f2QDv"], "f2QDv", "parcelRequire11c7")
+},{"axios":"jo6P5","./alert":"kxdiQ","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"10tSC":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "bookTour", ()=>bookTour);
+var _axios = require("axios");
+var _axiosDefault = parcelHelpers.interopDefault(_axios);
+var _alert = require("./alert");
+const stripe = Stripe("pk_test_51OQql1SGoZ3Hf2dnP7TgkPCwttAS9Yv0xQG3vfOnFftNpUO5GgcXzhhkKoo83iv7qihkRx9q2mOhniz0KCbIloa600PTgwpW4e");
+const bookTour = async (tourId)=>{
+    try {
+        // 1) Get checkout session from API
+        const session = await (0, _axiosDefault.default)({
+            method: "GET",
+            url: `http://127.0.0.1:3000/api/v1/bookings/checkout-session/${tourId}`
+        });
+        // 2) Create checkout form + charge credit card
+        const checkout = await stripe.redirectToCheckout({
+            sessionId: session.data.session.id
+        });
+        // Mount Checkout
+        checkout.mount("#checkout");
+    } catch (error) {
+        (0, _alert.showAlert)("error", error?.response?.data?.message || error.message);
+    }
+};
+
+},{"axios":"jo6P5","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./alert":"kxdiQ"}]},["dafvh","f2QDv"], "f2QDv", "parcelRequire11c7")
 
 //# sourceMappingURL=index.js.map
