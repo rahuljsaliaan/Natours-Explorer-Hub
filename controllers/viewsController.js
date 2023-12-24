@@ -74,3 +74,10 @@ exports.updateUserData = catchAsync(async (req, res, next) => {
     user: updatedUser,
   });
 });
+
+exports.getResetPasswordForm = catchAsync((req, res) => {
+  res.status(200).render('resetPassword', {
+    title: 'Reset your password',
+    token: req.params.token,
+  });
+});

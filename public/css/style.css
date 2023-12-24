@@ -1445,3 +1445,17 @@ body {
 .leaflet-popup:hover {
   z-index: 5;
 }
+
+.content-emphasized {
+  color: #eb4d4b;
+  font-size: 1.5rem;
+  font-weight: 700;
+  background-color: transparent;
+  outline: none;
+  border: none;
+  cursor: pointer;
+}
+
+.content-emphasized:hover {
+  color: #c0392b;
+}
