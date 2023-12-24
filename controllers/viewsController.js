@@ -1,3 +1,4 @@
+const Booking = require('../models/bookingModel');
 const Tour = require('../models/tourModel');
 const User = require('../models/userModel');
 // const AppError = require('../utils/appError');
@@ -79,5 +80,22 @@ exports.getResetPasswordForm = catchAsync(async (req, res) => {
   res.status(200).render('resetPassword', {
     title: 'Reset your password',
     token: req.params.token,
+  });
+});
+
+exports.getMyTours = catchAsync(async (req, res, next) => {
+  // 1) Find all bookings
+  const bookings = await Booking.find({ user: req.user.id });
+
+  // 2) Find tours with the returned IDs
+  // NOTE: Better option is virtual populate but we are using this for understanding that we can also do it this way
+  const tourIDs = bookings.map((el) => el.tour);
+
+  // NOTE: We are using the $in operator to find all tours whose ID is in the tourIDs array
+  const tours = await Tour.find({ _id: { $in: tourIDs } });
+
+  res.status(200).render('overview', {
+    title: 'My Tours',
+    tours,
   });
 });

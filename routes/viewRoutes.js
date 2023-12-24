@@ -6,6 +6,7 @@ const {
   getSignupForm,
   getAccount,
   getResetPasswordForm,
+  getMyTours,
   // updateUserData,
 } = require('../controllers/viewsController');
 const {
@@ -23,6 +24,8 @@ const router = express.Router();
 router.get('/', isLoggedIn, createBookingCheckout, getOverview);
 
 router.get('/me', protect, getAccount);
+
+router.get('/my-tours', protect, getMyTours);
 
 router.post('/forgotPassword', forgotPassword);
 
