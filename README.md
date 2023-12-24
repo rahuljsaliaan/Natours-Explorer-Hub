@@ -38,7 +38,7 @@ Embark on a virtual journey by exploring our live demo of the Natours project [ð
 
 - **MongoDB:** A flexible and scalable database solution to manage our dynamic tour data.
 
-- **Mapbox:** Enhancing the user experience with interactive and visually appealing maps.
+- **Leaflet:** Enhancing the user experience with interactive and visually appealing maps.
 
 - **Stripe:** Ensuring secure and seamless payment transactions for tour bookings.
 
