@@ -1483,13 +1483,13 @@ body {
   position: absolute;
   top: 0;
   left: 50%;
-  z-index: 1000;
+  z-index: -1;
 }
 
 .test-payment-info-box::after {
   content: "";
   position: absolute;
-  top: 55%;
+  top: 62%;
   left: -20px;
   border-width: 10px;
   border-style: solid;
@@ -1497,6 +1497,7 @@ body {
 }
 
 .test-payment-info-box.show {
+  z-index: 100;
   animation: popInFromLeft 0.5s forwards;
 }
 
