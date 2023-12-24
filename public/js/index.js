@@ -50,12 +50,18 @@ if (loginForm) {
 if (signupForm) {
   signupForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const { name, email, photo, password, confirmPassword } = getFormData(
-      signupForm,
-      ['name', 'email', 'photo', 'password', 'confirm-password'],
-    );
-    const base64Photo = await getBase64(photo.files[0]);
-    signup({ name, email, photo: base64Photo, password, confirmPassword });
+    const { name, email, password, passwordConfirm } = getFormData(signupForm, [
+      'name',
+      'email',
+      'password',
+      'password-confirm',
+    ]);
+
+    if (password !== passwordConfirm) {
+      return showAlert('error', 'Passwords do not match!');
+    }
+
+    signup({ name, email, password, passwordConfirm });
   });
 }
 

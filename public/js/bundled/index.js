@@ -620,20 +620,18 @@ if (loginForm) loginForm.addEventListener("submit", (e)=>{
 });
 if (signupForm) signupForm.addEventListener("submit", async (e)=>{
     e.preventDefault();
-    const { name, email, photo, password, confirmPassword } = getFormData(signupForm, [
+    const { name, email, password, passwordConfirm } = getFormData(signupForm, [
         "name",
         "email",
-        "photo",
         "password",
-        "confirm-password"
+        "password-confirm"
     ]);
-    const base64Photo = await getBase64(photo.files[0]);
+    if (password !== passwordConfirm) return (0, _alert.showAlert)("error", "Passwords do not match!");
     (0, _signup.signup)({
         name,
         email,
-        photo: base64Photo,
         password,
-        confirmPassword
+        passwordConfirm
     });
 });
 if (map) {
@@ -29079,7 +29077,7 @@ const updateUser = async (data, type = "data")=>{
             data,
             type: `${type === "data" ? "multipart/form-data" : "application/json"}`
         });
-        if (response.data.status === "success") (0, _alert.showAlert)("success", `${type[0].toLocaleUpperCase() + type.slice(1, -1)} updated successfully!`);
+        if (response.data.status === "success") (0, _alert.showAlert)("success", `${type[0].toLocaleUpperCase() + type.slice(1)} updated successfully!`);
     } catch (error) {
         (0, _alert.showAlert)("error", error?.response?.data?.message || error.message);
     }

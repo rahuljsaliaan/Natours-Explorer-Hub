@@ -20,9 +20,7 @@ export const updateUser = async (data, type = 'data') => {
     if (response.data.status === 'success')
       showAlert(
         'success',
-        `${
-          type[0].toLocaleUpperCase() + type.slice(1, -1)
-        } updated successfully!`,
+        `${type[0].toLocaleUpperCase() + type.slice(1)} updated successfully!`,
       );
   } catch (error) {
     showAlert('error', error?.response?.data?.message || error.message);
