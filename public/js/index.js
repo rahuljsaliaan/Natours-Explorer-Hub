@@ -1,4 +1,3 @@
-import '@babel/parser';
 import { logout } from './login';
 import { login } from './login';
 import { signup } from './signup';
@@ -153,29 +152,29 @@ if (resetPasswordForm) {
 
   if (!token) {
     location.assign('/');
-    return showAlert('error', 'Invalid token');
+    showAlert('error', 'Invalid token');
+  } else {
+    resetPasswordForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const { password, passwordConfirm } = getFormData(resetPasswordForm, [
+        'password',
+        'password-confirm',
+      ]);
+
+      if (password !== passwordConfirm) {
+        return showAlert('error', 'Passwords do not match');
+      }
+
+      const btnSavePassword = document.querySelector('#btn-save-password');
+
+      btnSavePassword.textContent = 'Updating...';
+
+      await resetPassword({ password, passwordConfirm }, token);
+
+      btnSavePassword.textContent = 'Save password';
+    });
   }
-
-  resetPasswordForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const { password, passwordConfirm } = getFormData(resetPasswordForm, [
-      'password',
-      'password-confirm',
-    ]);
-
-    if (password !== passwordConfirm) {
-      return showAlert('error', 'Passwords do not match');
-    }
-
-    const btnSavePassword = document.querySelector('#btn-save-password');
-
-    btnSavePassword.textContent = 'Updating...';
-
-    await resetPassword({ password, passwordConfirm }, token);
-
-    btnSavePassword.textContent = 'Save password';
-  });
 }
 
 if (btnBookTour) {

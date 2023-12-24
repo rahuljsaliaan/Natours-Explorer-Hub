@@ -61,6 +61,7 @@ app.use(
           'data:',
           'https://unpkg.com',
           'https://*.tile.openstreetmap.org',
+          'https://cdnjs.cloudflare.com',
         ],
         connectSrc: ["'self'"],
         fontSrc: ["'self'", 'https://fonts.gstatic.com'],
