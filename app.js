@@ -19,12 +19,12 @@ const bookingRouter = require('./routes/bookingRoutes');
 
 const app = express();
 
-app.use('trust proxy');
+app.set('trust proxy', 1);
 
+// origin: 'https://natours-frontend.com/', // example: for only one domain
 app.use(
   cors({
     origin: true,
-    // origin: 'https://natours-frontend.com/', // example: for only one domain
     credentials: true,
   }),
 );
