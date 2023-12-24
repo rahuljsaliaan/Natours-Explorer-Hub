@@ -14,14 +14,14 @@ const {
   protect,
   forgotPassword,
 } = require('../controllers/authController');
-const { createBookingCheckout } = require('../controllers/bookingController');
+// const { createBookingCheckout } = require('../controllers/bookingController');
 
 const router = express.Router();
 
 // NOTE: We don't need this route because we are using the API to update the user data
 // router.post('/submit-user-data', protect, updateUserData);
 
-router.get('/', isLoggedIn, createBookingCheckout, getOverview);
+router.get('/', isLoggedIn, /*createBookingCheckout ,*/ getOverview);
 
 router.get('/me', protect, getAccount);
 

@@ -16,6 +16,7 @@ const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
 const viewRouter = require('./routes/viewRoutes');
 const bookingRouter = require('./routes/bookingRoutes');
+const { webhookCheckout } = require('./controllers/bookingController');
 
 const app = express();
 
@@ -93,6 +94,15 @@ const limiter = rateLimit({
 
 // Set limiter only for /api route
 app.use('/api', limiter);
+
+// Webhook
+// NOTE: The reason we are using this route here is because we need to access the raw body of the request and stripe needs the raw body to be in a certain format
+// NOTE: The express.raw() will parse the body into a buffer and we need to convert it into a string
+app.post(
+  '/webhook-checkout',
+  express.raw({ type: 'application/json' }),
+  webhookCheckout,
+);
 
 // Body parser, reading data from body into req.body
 app.use(
