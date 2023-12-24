@@ -42,6 +42,8 @@ Embark on a virtual journey by exploring our live demo of the Natours project [ð
 
 - **Stripe:** Ensuring secure and seamless payment transactions for tour bookings.
 
+- **Pug:** Used as the template engine for generating the HTML views.
+
 ## Continuous Deployment
 
 Natours is proudly hosted on Vercel, ensuring continuous deployment to keep our platform up-to-date with the latest features and improvements.
