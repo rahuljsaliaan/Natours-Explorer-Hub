@@ -1,6 +1,6 @@
 # Natours - Explore the Wilderness 🌿
 
-[![Vercel](https://therealsujitk-vercel-badge.vercel.app/?app=natours-rahuljsaliaan)](https://vercel.com/rahul-js-projects/natours/ENBFeWK9EeRSABVmxgbtJvnGeAzG)
+![Render Badge](https://img.shields.io/badge/deployed%20on-render-brightgreen)
 
 Discover the wonders of the natural world with Natours, your go-to platform for booking exciting tours led by experienced guides. Whether you crave thrilling adventures or peaceful nature walks, Natours offers a variety of options to suit every explorer's taste.
 
