@@ -34,21 +34,21 @@ const upload = multer({ storage: multerStorage, fileFilter: multerFilter });
 exports.uploadPhoto = upload.single('photo');
 
 // Resize the user photo
-exports.resizeUserPhoto = (req, res, next) => {
+exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
   // NOTE: If there is no file, then we don't need to resize the photo
   if (!req.file) return next();
 
   // user-<user-id>-<timestamp>.extension
   req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
 
-  sharp(req.file.buffer)
+  await sharp(req.file.buffer)
     .resize(500, 500)
     .toFormat('jpeg')
     .jpeg({ quality: 90 })
     .toFile(`public/img/users/${req.file.filename}`);
 
   next();
-};
+});
 
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
