@@ -82,12 +82,14 @@ const createBookingCheckout = async (session) => {
   await Booking.create({ tour, user, price });
 };
 
+// Webhook
 exports.webhookCheckout = (req, res, next) => {
   // NOTE: Getting the signature from the headers
   const signature = req.headers['stripe-signature'];
 
   let event;
   try {
+    // Verifying Webhook Signature
     event = stripe.webhooks.constructEvent(
       req.body,
       signature,
@@ -97,9 +99,11 @@ exports.webhookCheckout = (req, res, next) => {
     res.status(400).send(`Webhook error: ${error.message}`);
   }
 
+  // Handling Checkout Session Completion Event
   if (event.type === 'checkout.session.completed')
     createBookingCheckout(event.data.object);
 
+  // Responding to Stripe
   res.status(200).json({ received: true });
 };
 
